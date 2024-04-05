@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("net.fabricmc:fabric-loom:${versions.loom}")
+        classpath("net.fabricmc:fabric-loom:1.6-SNAPSHOT")
     }
 }
 
@@ -21,8 +21,12 @@ applyShadowConfiguration()
 apply(plugin = "fabric-loom")
 apply(plugin = "java-library")
 
+//configure<LoomGradleExtension> {
+//    accessWidener("src/main/resources/worldedit.accesswidener")
+//}
+
 configure<LoomGradleExtension> {
-    accessWidener("src/main/resources/worldedit.accesswidener")
+    accessWidenerPath = file("src/main/resources/worldedit.accesswidener")
 }
 
 val minecraftVersion = "1.16.3"
@@ -103,9 +107,9 @@ dependencies {
     "modCompileOnly"("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
 
     // Hook these up manually, because Fabric doesn't seem to quite do it properly.
-    "compileOnly"("net.fabricmc:sponge-mixin:${project.versions.mixin}")
-    "annotationProcessor"("net.fabricmc:sponge-mixin:${project.versions.mixin}")
-    "annotationProcessor"("net.fabricmc:fabric-loom:${project.versions.loom}")
+    "compileOnly"("net.fabricmc:sponge-mixin:0.8.1+build.21")
+    "annotationProcessor"("net.fabricmc:sponge-mixin:0.8.1+build.21")
+    "annotationProcessor"("net.fabricmc:fabric-loom:1.6-SNAPSHOT")
 }
 
 configure<BasePluginConvention> {
@@ -127,7 +131,7 @@ tasks.named<Copy>("processResources") {
     }
 }
 
-addJarManifest(includeClasspath = true)
+//addJarManifest(includeClasspath = true)
 
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("dist-dev")
@@ -157,7 +161,7 @@ tasks.register<RemapJarTask>("remapShadowJar") {
     input.set(shadowJar.archiveFile)
     archiveFileName.set(shadowJar.archiveFileName.get().replace(Regex("-dev\\.jar$"), ".jar"))
     addNestedDependencies.set(true)
-    remapAccessWidener.set(true)
+//    remapAccessWidener.set(true)
 }
 
 tasks.named("assemble").configure {
